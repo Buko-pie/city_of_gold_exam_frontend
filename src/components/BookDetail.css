@@ -1,0 +1,169 @@
+.book-detail {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.book-detail.loading,
+.book-detail.empty {
+  padding: 2rem;
+  text-align: center;
+  color: #666;
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  z-index: 10;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+.detail-container {
+  padding: 2rem;
+}
+
+.detail-header {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.detail-cover {
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.detail-meta {
+  flex: 1;
+}
+
+.detail-meta h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.detail-meta .author {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.detail-meta .rating {
+  font-size: 1.2rem;
+  color: #f59e0b;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.info-section {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.5rem;
+}
+
+.info-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.info-section dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1rem;
+}
+
+.info-section dt {
+  font-weight: 600;
+  color: #333;
+}
+
+.info-section dd {
+  color: #666;
+}
+
+.info-section p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.related-books {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.related-book-card {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.related-book-card:hover {
+  transform: scale(1.05);
+}
+
+.related-book-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.related-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.related-author {
+  font-size: 0.75rem;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .detail-header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .detail-cover {
+    width: 150px;
+    height: 225px;
+  }
+
+  .detail-meta h1 {
+    font-size: 1.5rem;
+  }
+
+  .detail-container {
+    padding: 1rem;
+  }
+}
