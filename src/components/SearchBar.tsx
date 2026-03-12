@@ -1,50 +1,32 @@
 import React, { useState } from 'react'
-import { Filter } from '../types/index'
+import { useBooks } from '../hooks/useBooks'
 import './SearchBar.css'
 
 interface SearchBarProps {
   onSearch: (query: string) => void
-  onFilter: (filters: Filter[]) => void
+  currentPage: number
+  onPageChange: (page: number) => void
 }
 
-const GENRES = ['Fiction', 'Science Fiction', 'Fantasy', 'Romance', 'Drama', 'Classic', 'Adventure', 'Dystopian', 'Poetry']
-
-export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, onFilter }) => {
+export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, currentPage, onPageChange }) => {
   const [query, setQuery] = useState('')
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([])
-  const [author, setAuthor] = useState('')
+  const { pagination, isLoading } = useBooks();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     onSearch(query)
   }
 
-  const handleGenreChange = (genre: string) => {
-    const updated = selectedGenres.includes(genre)
-      ? selectedGenres.filter(g => g !== genre)
-      : [...selectedGenres, genre]
-    setSelectedGenres(updated)
-
-    const filters: Filter[] = [
-      ...updated.map(g => ({ type: 'genre' as const, value: g }))
-    ]
-    if (author) {
-      filters.push({ type: 'author', value: author })
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      onPageChange(currentPage - 1)
     }
-    onFilter(filters)
   }
 
-  const handleAuthorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newAuthor = e.target.value
-    setAuthor(newAuthor)
-
-    const filters: Filter[] = [
-      ...selectedGenres.map(g => ({ type: 'genre' as const, value: g }))
-    ]
-    if (newAuthor) {
-      filters.push({ type: 'author', value: newAuthor })
+  const handleNext = () => {
+    if (pagination.next_page) {
+      onPageChange(currentPage + 1)
     }
-    onFilter(filters)
   }
 
   return (
@@ -60,34 +42,28 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, onFilter }) => {
         <button type="submit" className="search-button">Search</button>
       </form>
 
-      <div className="filters">
-        <div className="filter-group">
-          <label className="filter-label">Author:</label>
-          <input
-            type="text"
-            placeholder="Filter by author..."
-            value={author}
-            onChange={handleAuthorChange}
-            className="filter-input"
-          />
-        </div>
+      <div className="pagination">
+        <button
+          className="pagination-button"
+          onClick={handlePrevious}
+          disabled={currentPage === 1 || isLoading}
+          title="Previous page"
+        >
+          &lt;
+        </button>
 
-        <div className="filter-group">
-          <label className="filter-label">Genres:</label>
-          <div className="genre-checkboxes">
-            {GENRES.map(genre => (
-              <label key={genre} className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={selectedGenres.includes(genre)}
-                  onChange={() => handleGenreChange(genre)}
-                />
-                {genre}
-              </label>
-            ))}
-          </div>
-        </div>
+        <span className="pagination-current">{currentPage}</span>
+
+        <button
+          className="pagination-button"
+          onClick={handleNext}
+          disabled={!pagination.next_page || isLoading}
+          title="Next page"
+        >
+          &gt;
+        </button>
       </div>
+
     </div>
   )
 }

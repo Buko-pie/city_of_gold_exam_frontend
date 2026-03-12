@@ -1,40 +1,35 @@
 import { useEffect, useState } from 'react'
-import { Book, Collection } from './types/index'
+import { Book } from './types/index'
 import { useBooks } from './hooks/useBooks'
-import { useSearch } from './hooks/useSearch'
-import { useBookmarks } from './hooks/useBookmarks'
-import { useCollections } from './hooks/useCollections'
+import { useFavourites } from './hooks/useFavourites'
+import { useUser } from './hooks/useUser'
 import { useBookDetail } from './hooks/useBookDetail'
+import { useCookie } from './hooks/useCookie';
 import { BookList } from './components/BookList'
 import { SearchBar } from './components/SearchBar'
 import { BookDetail } from './components/BookDetail'
-import { CollectionManager } from './components/CollectionManager'
+import { FavouritesManager } from './components/FavouritesManager'
 import { LoadingIndicator } from './components/LoadingIndicator'
 import './App.css'
+import { useUIStore } from './stores/uiStore';
+import { useFavouriteStore } from './stores/favouritesStore';
 
 function App() {
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedBook, setSelectedBook] = useState<Book | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [searchFilters, setSearchFilters] = useState([])
-  const [isSearching, setIsSearching] = useState(false)
+  const [searchQuery, setSearchQuery] = useState<string | null>(null)
 
   // Hooks
-  const { books, isLoading, error, totalPages } = useBooks(currentPage, 10)
-  const { results: searchResults, isLoading: isSearchLoading } = useSearch(searchQuery, searchFilters)
-  const { bookmarks, toggleBookmark, isBookmarked } = useBookmarks()
-  const { collections, createCollection, deleteCollection } = useCollections()
-  const { book: detailBook, relatedBooks, isLoading: isDetailLoading } = useBookDetail(selectedBook?.id || '')
+  const { books, isLoading, error, fetchBooks } = useBooks()
+  const { setCookie, getCookie } = useCookie();
+  const { isFavourited, fetchFavourites, toggleFavourite } = useFavourites()
+  const { favourites } = useFavouriteStore()
+  const { loginSession } = useUser();
+  const { user } = useUIStore();
+  const { book: detailBook, isLoading: isDetailLoading } = useBookDetail(selectedBook?.id.toString() || '')
 
   const handleSearch = (query: string) => {
     setSearchQuery(query)
-    setIsSearching(true)
-    setCurrentPage(1)
-  }
-
-  const handleFilter = (filters: any) => {
-    setSearchFilters(filters)
-    setIsSearching(true)
     setCurrentPage(1)
   }
 
@@ -48,24 +43,79 @@ function App() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
-    window.scrollTo(0, 0)
   }
 
-  const displayBooks = isSearching ? searchResults : books
-  const isLoading_ = isSearching ? isSearchLoading : isLoading
+  const handleFavourteToggle = (bookId: number, title: string, authors: string[]) => {
+   toggleFavourite(bookId, title, authors)
+  }
+
+  const removeFav = async (bookId: number) => {
+    toggleFavourite(bookId, '', [''])
+  }
+
+  const selectFav = async (bookId: number) => {
+    setSelectedBook({
+      id: bookId,
+      title: '',
+      author: {
+        name: '',
+        birth_year: 0,
+        death_year: 0
+      },
+      summaries: [],
+      editors: [],
+      translators: [],
+      subjects: [],
+      bookshelves: [],
+      languages: [],
+      copyright: false,
+      media_type: "Text",
+      formats: {},
+      download_count: 0
+    })
+  }
+
+  useEffect(() => {
+    fetchBooks(currentPage, searchQuery);
+  }, [currentPage, searchQuery])
+
+  useEffect(() => {
+    const existingSession = getCookie("session_id");
+
+    if (!existingSession) {
+      const sessionId = crypto.randomUUID();
+      setCookie("session_id", sessionId, { expires: 365 })
+      console.log("New session created:", sessionId);
+    } else {
+      console.log("Returning user, session:", existingSession);
+
+      loginSession(existingSession);
+    }
+  }, []);
+
+  useEffect(() => {
+    if(user){
+      fetchFavourites(user.id);
+    }
+  }, [user])
+
+  useEffect(() => {
+    console.log("Favourites updated:", favourites);
+  }, [favourites])
+
+  const displayBooks = books;
 
   return (
     <div className="app">
       <header className="app-header">
-        <h1>📚 Book Explorer</h1>
-        <p>Discover, search, and manage your favorite books</p>
+        <h1>Book Explorer</h1>
       </header>
 
       <div className="app-container">
         <div className="main-content">
-          <SearchBar onSearch={handleSearch} onFilter={handleFilter} />
+          <SearchBar onSearch={handleSearch} currentPage={currentPage} onPageChange={handlePageChange}  />
 
-          {isLoading_ ? (
+          {isLoading ? (
             <LoadingIndicator message="Loading books..." />
           ) : error ? (
             <div className="error-message">Error: {error.message}</div>
@@ -73,32 +123,29 @@ function App() {
             <BookList
               books={displayBooks}
               onBookClick={handleBookClick}
-              isLoading={isLoading_}
+              isLoading={isLoading}
               currentPage={currentPage}
-              totalPages={isSearching ? 1 : totalPages}
+              totalPages={1}
               onPageChange={handlePageChange}
             />
           )}
         </div>
 
         <aside className="sidebar">
-          <CollectionManager
-            collections={collections}
-            onCreateCollection={createCollection}
-            onDeleteCollection={deleteCollection}
-            onSelectCollection={() => {}}
+          <FavouritesManager
+            favourites={[...favourites.values()]}
+            onRemoveFav={removeFav}
+            onSelectFav={selectFav}
           />
 
           {selectedBook && (
             <div className="detail-panel">
               <BookDetail
                 book={detailBook || selectedBook}
-                relatedBooks={relatedBooks}
                 isLoading={isDetailLoading}
-                isBookmarked={isBookmarked(selectedBook.id)}
-                onBookmarkToggle={toggleBookmark}
+                isBookmarked={isFavourited(selectedBook.id)}
+                onFavouriteToggle={handleFavourteToggle}
                 onClose={handleCloseDetail}
-                onRelatedBookClick={handleBookClick}
               />
             </div>
           )}

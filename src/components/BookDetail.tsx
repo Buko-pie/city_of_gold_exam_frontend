@@ -5,23 +5,20 @@ import './BookDetail.css'
 
 interface BookDetailProps {
   book: Book | null
-  relatedBooks: Book[]
   isLoading: boolean
   isBookmarked: boolean
-  onBookmarkToggle: (bookId: string) => void
+  onFavouriteToggle: (bookId: number, title: string, authors: string[]) => void
   onClose: () => void
-  onRelatedBookClick: (book: Book) => void
 }
 
 export const BookDetail: React.FC<BookDetailProps> = ({
   book,
-  relatedBooks,
   isLoading,
   isBookmarked,
-  onBookmarkToggle,
+  onFavouriteToggle,
   onClose,
-  onRelatedBookClick
 }) => {
+
   if (isLoading) {
     return <div className="book-detail loading">Loading...</div>
   }
@@ -30,21 +27,30 @@ export const BookDetail: React.FC<BookDetailProps> = ({
     return <div className="book-detail empty">No book selected</div>
   }
 
+  const toggle = () => {
+    const authors = book.authors?.map((book) => book.name);
+    onFavouriteToggle(book.id, book.title, authors as string[])
+  }
+
   return (
     <div className="book-detail">
       <button className="close-button" onClick={onClose}>✕</button>
 
       <div className="detail-container">
         <div className="detail-header">
-          <img src={book.coverImage} alt={book.title} className="detail-cover" />
           <div className="detail-meta">
             <h1>{book.title}</h1>
-            <p className="author">by {book.author}</p>
-            <div className="rating">★ {book.rating.toFixed(1)}</div>
+            <p>Author/s</p>
+            {book.authors?.map(author => (
+              <h4 key={author.name}>
+                - {author.name}
+              </h4>
+            ))}
+            <div className="book-rating">Downloads: {book.download_count}</div>
             <BookmarkButton
-              bookId={book.id}
+              bookId={book.id.toString()}
               isBookmarked={isBookmarked}
-              onToggle={onBookmarkToggle}
+              onToggle={toggle}
             />
           </div>
         </div>
@@ -52,41 +58,37 @@ export const BookDetail: React.FC<BookDetailProps> = ({
         <div className="detail-content">
           <div className="info-section">
             <h3>Details</h3>
-            <dl>
-              <dt>ISBN:</dt>
-              <dd>{book.isbn}</dd>
-              <dt>Publication Date:</dt>
-              <dd>{new Date(book.publicationDate).toLocaleDateString()}</dd>
-              <dt>Pages:</dt>
-              <dd>{book.pageCount}</dd>
-              <dt>Genres:</dt>
-              <dd>{book.genre.join(', ')}</dd>
-            </dl>
+              <h4>Bookshelves:</h4>
+              {book.bookshelves?.map((subject) => (
+                <p key={`${book.id}_${subject}`}>{subject}</p>
+              ))}
+              <br />
+              <h4>Subjects</h4>
+              {book.subjects?.map((subject) => (
+                <p key={`${book.id}_${subject}`}>{subject}</p>
+              ))}
+              <br />
+              <h4>Languages:</h4>
+              {book.languages?.map((lang) => (
+                <p key={`${book.id}_${lang}`}>{lang.toUpperCase()}</p>
+              ))}
+              <br />
+              <h4>Copyright:</h4>
+              <p>{book.copyright ? "Yes" : "No"}</p>
           </div>
 
           <div className="info-section">
-            <h3>Description</h3>
-            <p>{book.description}</p>
+            <h3>Summary</h3>
+            {book.summaries?.length > 0 ? (
+              book.summaries.map((summary, index) => (
+                <p key={`${book.id}_summary_${index}`} className="book-summary">
+                  {summary}
+                </p>
+              ))
+            ) : (
+              <p>No summary available</p>
+            )}
           </div>
-
-          {relatedBooks.length > 0 && (
-            <div className="info-section">
-              <h3>Related Books</h3>
-              <div className="related-books">
-                {relatedBooks.map(relatedBook => (
-                  <div
-                    key={relatedBook.id}
-                    className="related-book-card"
-                    onClick={() => onRelatedBookClick(relatedBook)}
-                  >
-                    <img src={relatedBook.coverImage} alt={relatedBook.title} />
-                    <p className="related-title">{relatedBook.title}</p>
-                    <p className="related-author">{relatedBook.author}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

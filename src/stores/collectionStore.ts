@@ -1,13 +1,13 @@
 import { create } from 'zustand'
-import { Collection } from '../types/index'
+import { Favourites } from '../types/index'
 
 interface CollectionState {
-  collections: Collection[]
-  addCollection: (collection: Collection) => void
+  collections: Favourites[]
+  addCollection: (collection: Favourites) => void
   removeCollection: (collectionId: string) => void
   addBookToCollection: (collectionId: string, bookId: string) => void
   removeBookFromCollection: (collectionId: string, bookId: string) => void
-  setCollections: (collections: Collection[]) => void
+  setCollections: (collections: Favourites[]) => void
 }
 
 export const useCollectionStore = create<CollectionState>((set) => ({

@@ -1,20 +1,28 @@
 import { create } from 'zustand'
-import { Book, Filter } from '../types/index'
+import { Book } from '../types/index'
+
+
+export interface User {
+  id: string;
+  session_id: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 interface UIState {
   selectedBook: Book | null
   searchQuery: string
-  filters: Filter[]
+  user: User | null
   setSelectedBook: (book: Book | null) => void
   setSearchQuery: (query: string) => void
-  setFilters: (filters: Filter[]) => void
+  setUser: (user: User) => void
 }
 
 export const useUIStore = create<UIState>((set) => ({
   selectedBook: null,
   searchQuery: '',
-  filters: [],
+  user: null,
   setSelectedBook: (book) => set({ selectedBook: book }),
   setSearchQuery: (query) => set({ searchQuery: query }),
-  setFilters: (filters) => set({ filters })
+  setUser: (_user: User) => set ({ user: _user })
 }))

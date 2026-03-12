@@ -38,6 +38,9 @@
 }
 
 .book-info {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
   padding: 1rem;
 }
 
@@ -62,8 +65,9 @@
 
 .book-rating {
   font-size: 0.9rem;
-  color: #f59e0b;
   font-weight: 600;
+  align-self: end;
+  margin-top: auto;
 }
 
 .pagination {

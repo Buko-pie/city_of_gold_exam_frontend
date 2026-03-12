@@ -1,27 +1,33 @@
+interface Person {
+  name: string;
+  birth_year: number;
+  death_year: number;
+}
+
 export interface Book {
+  id: number;
+  title: string;
+  author: Person;
+  authors?: Person[];
+  summaries: string[];
+  editors: Person[];
+  translators: Person[];
+  subjects: string[];
+  bookshelves: string[];
+  languages: string[];
+  copyright: boolean;
+  media_type: "Text" | "Video" | "Audio";
+  formats: Record<string, string>
+  download_count: number;
+}
+
+export interface Favourite {
   id: string
+  userId: string
+  bookId: number
   title: string
   author: string
-  isbn: string
-  publicationDate: string
-  description: string
-  genre: string[]
-  rating: number
-  coverImage: string
-  pageCount: number
-}
-
-export interface Collection {
-  id: string
-  name: string
-  bookIds: string[]
-  createdAt: string
-  updatedAt: string
-}
-
-export interface Filter {
-  type: 'genre' | 'author' | 'year'
-  value: string
+  addedAt: string
 }
 
 export interface ApiResponse<T> {
@@ -33,9 +39,9 @@ export interface ApiResponse<T> {
 
 export interface PaginationMeta {
   currentPage: number
-  totalPages: number
   totalItems: number
-  itemsPerPage: number
+  next_page: string | null;
+  prev_page: string | null;
 }
 
 export interface PaginatedResponse<T> extends ApiResponse<T[]> {
