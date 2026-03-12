@@ -9,7 +9,7 @@ export const useUser = (): UseCollectionsReturn => {
 
   const loginSession = async (sessionId: string) => {
     try {
-      const response = await fetch('/api/favorites/user/getOrCreate', {
+      const response = await fetch('https://city-of-gold-exam-backend.onrender.com/api/favorites/user/getOrCreate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

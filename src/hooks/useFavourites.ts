@@ -20,7 +20,7 @@ export const useFavourites = (): UseBookmarksReturn => {
     }
 
     try {
-      const response = await fetch('/api/favorites', {
+      const response = await fetch('https://city-of-gold-exam-backend.onrender.com/api/favorites', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export const useFavourites = (): UseBookmarksReturn => {
       console.log(bookId)
       if(favourites.has(bookId)) {
         console.log("removing fav");
-        response = await fetch(`/api/favorites/${bookId}?userId=${user.id}`, {
+        response = await fetch(`https://city-of-gold-exam-backend.onrender.com/api/favorites/${bookId}?userId=${user.id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ export const useFavourites = (): UseBookmarksReturn => {
         })
       } else {
         console.log("adding fav");
-        response = await fetch('/api/favorites', {
+        response = await fetch('https://city-of-gold-exam-backend.onrender.com/api/favorites', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ export const useFavourites = (): UseBookmarksReturn => {
 
     try {
       console.log("FETCHING FAVOURITES");
-      const response = await fetch(`/api/favorites?userId=${userId}`, {
+      const response = await fetch(`https://city-of-gold-exam-backend.onrender.com/api/favorites?userId=${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

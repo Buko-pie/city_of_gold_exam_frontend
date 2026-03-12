@@ -31,7 +31,7 @@ export const useBooks = (): UseBooksReturn => {
     abortControllerRef.current = new AbortController()
 
     try {
-      const response = await fetch(`/api/books?page=${newPage}&search=${search || ''}`, {
+      const response = await fetch(`https://city-of-gold-exam-backend.onrender.com/api/books?page=${newPage}&search=${search || ''}`, {
         signal: abortControllerRef.current.signal
       })
 

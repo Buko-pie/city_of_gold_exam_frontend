@@ -29,7 +29,7 @@ export const useBookDetail = (bookId: string): UseBookDetailReturn => {
 
       try {
         // Fetch book details
-        const bookResponse = await fetch(`/api/books/${bookId}`, {
+        const bookResponse = await fetch(`https://city-of-gold-exam-backend.onrender.com/api/books/${bookId}`, {
           signal: abortControllerRef.current.signal
         })
 
