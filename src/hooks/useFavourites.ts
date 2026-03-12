@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useFavouriteStore } from '../stores/favouritesStore'
 import { useUIStore } from '../stores/uiStore'
 import { ApiResponse, Favourite } from '../types'
