@@ -10,8 +10,6 @@ interface UseBookmarksReturn {
   fetchFavourites: (userId: string) => void
 }
 
-const formatter = new Intl.ListFormat("en", { style: "long", type: "conjunction" })
-
 export const useFavourites = (): UseBookmarksReturn => {
   const { favourites, isFavourited, toggleFavourite: toggleFav, setFavourites } = useFavouriteStore()
   const { user } = useUIStore();
@@ -32,7 +30,7 @@ export const useFavourites = (): UseBookmarksReturn => {
           userId: user.id,
           bookId,
           title,
-          author: formatter.format(authors)
+          author: authors.join(', ')
          }),
       })
 
@@ -72,7 +70,7 @@ export const useFavourites = (): UseBookmarksReturn => {
             userId: user.id,
             bookId,
             title,
-            author: formatter.format(authors)
+            author: authors.join(', ')
           }),
         })
       }
@@ -83,7 +81,7 @@ export const useFavourites = (): UseBookmarksReturn => {
         userId: user.id,
         bookId: Number(bookId),
         title,
-        author: formatter.format(authors),
+        author: authors.join(', '),
         addedAt: new Date().toISOString()
       })
 

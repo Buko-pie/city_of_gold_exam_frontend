@@ -1,7 +1,4 @@
-import { useEffect, useRef } from 'react'
-import { Favourites } from '../types/index'
-import { useCollectionStore } from '../stores/collectionStore'
-import { User, useUIStore } from '../stores/uiStore'
+import { useUIStore } from '../stores/uiStore'
 
 interface UseCollectionsReturn {
   loginSession: (sessionId: string) => Promise<void>
