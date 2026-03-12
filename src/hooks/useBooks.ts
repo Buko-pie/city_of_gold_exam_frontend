@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import { Book, PaginationMeta } from '../types/index'
 import { useBookStore } from '../stores/bookStore'
 

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Cookies from "js-cookie";
 
 interface CookieOptions {
@@ -19,7 +18,7 @@ export function useCookie() {
     return Cookies.get(name);
   };
 
-  const deleteCookie = () => {
+  const deleteCookie = (name: string) => {
     Cookies.remove(name);
   };
 
