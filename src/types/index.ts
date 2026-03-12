@@ -30,6 +30,8 @@ export interface Favourite {
   addedAt: string
 }
 
+export type Favourites = Map<number, Favourite>
+
 export interface ApiResponse<T> {
   success: boolean
   data: T
